@@ -58,7 +58,7 @@ function toggleLivePreview() {
     if(block) {
         console.log("in toggleLivePreview: active block is " + block);
         if(isLivePreview()) {
-            $(block).find(".box-output").removeClass("hidden");            
+            $(block).find(".box-output").removeClass("hidden");
             activateLiveUpdate(block);
         } else {
             $(block).find(".box-output").addClass("hidden");
@@ -152,7 +152,7 @@ function prepareBlankBlock(block, str) {
     $($(block).find(".box-source").get(0)).prepend(textnode);
     $(block).find('.box-button').click( function () { toggleBlock($(this).parent()); } );
     $(block).find('.box-source').dblclick( function () { toggleBlock($(this).parent()); } );
-    $(block).find('.box-output').click( function () { toggleBlock($(this).parent()); } );    
+    $(block).find('.box-output').click( function () { toggleBlock($(this).parent()); } );
 }
 
 
@@ -201,7 +201,7 @@ function deleteEmptyBlocks() {
 // that takes a source string, a block and an outputElt and runs the
 // transformation. if mathjax is not needed, the createTransformWrapper
 // function can be used.
-var transformers = { 
+var transformers = {
     'md': function(source,block,outputElt) {
         outputElt.innerHTML = source
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,outputElt], // apply MathJax
@@ -258,7 +258,7 @@ function ometa2js(code) {
     console.log("code is: \n" + code)
     tree = BSOMetaJSParser.matchAll(code, "topLevel", undefined, parseError)
     console.log("OMetaJS Parse tree: \n" + tree)
-    jscode = BSOMetaJSTranslator.match(tree, "trans", undefined, translationError) 
+    jscode = BSOMetaJSTranslator.match(tree, "trans", undefined, translationError)
     console.log("Generated JS code: \n" + jscode)
     return jscode
 }
@@ -287,7 +287,7 @@ function transformBlock(block) {
         console.log("Found a block in the OMeta language...")
         if(param == null) {
             notify("You forgot to name your language! Begin the block with '@ometa:[yourlanguage]'.")
-        } else { 
+        } else {
             // we process the ometa code and add the transformer to
             // the map of transformers
             try {
@@ -309,7 +309,7 @@ function transformBlock(block) {
         transformername = language
     }
     var thetransformer = transformers[transformername]
-    if(thetransformer == null) { 
+    if(thetransformer == null) {
         // if we don't have a custom transformer for the language, we
         // use the identity transform
         thetransformer = createTransformWrapper(identityTransform,false)
@@ -339,7 +339,7 @@ function editBlock(block) {
     $(block).removeClass("display");
     $(block).addClass("editing");
     sourceElt = $(block).find(".box-source").get(0);
-    outputElt = $(block).find(".box-output").get(0);   
+    outputElt = $(block).find(".box-output").get(0);
     //$(sourceElt).removeClass("hidden");
     r = document.createRange();
     r.setStart($(sourceElt).get(0),0);
@@ -357,7 +357,7 @@ function editBlock(block) {
 
 function displayBlock(block) {
     sourceElt = $(block).find(".box-source").get(0);
-    outputElt = $(block).find(".box-output").get(0);   
+    outputElt = $(block).find(".box-output").get(0);
     $(outputElt).removeClass("hidden");
     if($(block).hasClass("editing")) {
         console.log("displayBlock: hiding source");
@@ -368,7 +368,7 @@ function displayBlock(block) {
 function blockInEditMode(block) {
     sourceElt = $(block).find(".box-source").get(0);
     outputElt = $(block).find(".box-output").get(0);
-    return $(outputElt).hasClass("hidden");   
+    return $(outputElt).hasClass("hidden");
 }
 
 function toggleBlock(block) {
@@ -447,7 +447,7 @@ function getCursorOffset() {
     return undefined;
 }
 
-/* inserts text at the end of the block. 
+/* inserts text at the end of the block.
    does *not* trigger a transform. */
 function appendTextToBlock(txt, target) {
     t = document.createTextNode(txt);
@@ -455,7 +455,7 @@ function appendTextToBlock(txt, target) {
     normalizeBlock(target);
 }
 
-/* inserts text at the beginning of the block. 
+/* inserts text at the beginning of the block.
    does *not* trigger a transform. */
 function prependTextToBlock(txt, target) {
     t = document.createTextNode(txt);
@@ -486,7 +486,7 @@ function normalizeBlock(target) {
     $(target).get(0).normalize();
     $(target).find(".box-source br").remove();
     $(target).find(".box-source").append(mozDirtyStr);
-    $(target).get(0).normalize();    
+    $(target).get(0).normalize();
 }
 
 function normalizeActiveBlock() {
@@ -546,7 +546,7 @@ function joinNext() {
             editBlock(b);
             placeCursor(b,offset);
         }
-    }    
+    }
 }
 
 function moveFocusToPreviousBlock() {
@@ -562,7 +562,7 @@ function moveFocusToPreviousBlock() {
         r.setEndAfter(node);
         r.collapse(false);
         window.getSelection().removeAllRanges();
-        window.getSelection().addRange(r);    
+        window.getSelection().addRange(r);
     }
 }
 
@@ -639,29 +639,29 @@ function keyboardEventToString(event) {
     if ( event.altKey && special !== "alt" ) {
         modif += "alt+";
     }
-    
+
     if ( event.ctrlKey && special !== "ctrl" ) {
         modif += "ctrl+";
     }
-    
+
 // TODO: Need to make sure this works consistently across platforms
     if ( event.metaKey && !event.ctrlKey && special !== "meta" ) {
         modif += "meta+";
     }
-    
+
     if ( event.shiftKey && special !== "shift" ) {
         modif += "shift+";
     }
-    
+
     if ( special ) {
         return modif + special;
         //possible[ modif + special ] = true;
-        
+
     } else {
         return modif + character;
         //possible[ modif + character ] = true;
         /*possible[ modif + jQuery.hotkeys.shiftNums[ character ] ] = true;
-        
+
         // "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
         if ( modif === "shift+" ) {
             possible[ jQuery.hotkeys.shiftNums[ character ] ] = true;
@@ -796,6 +796,7 @@ function loadDocumentFromJSON(obj) {
 
 function loadDocumentFromText(str) {
     if(str != undefined) {
+                str = str.replace(/\r\n/g, "\n");
                 $(".column").empty();
                 blocks = str.split(blockSeparator); // blocks are delimited by two blank lines
                 for(var i = 0; i < blocks.length; i++) {
@@ -803,7 +804,7 @@ function loadDocumentFromText(str) {
                 }
         // setActiveBlock($($(".box-container").get(0)));
             transformAll();
-    }   
+    }
 }
 
 function loadDocumentFromFile(path) {
@@ -960,7 +961,7 @@ function saveFile() {
                 filename = x;
                 saveFile();
             }
-        });     
+        });
     } else {
         saveDocumentToFile(filename);
     }
@@ -977,7 +978,7 @@ function exportHTML(mj) {
             console.log("Export HTML: picked " + x);
             saveOutputToFile(x,mj);
         }
-    });     
+    });
 }
 
 function exportLaTeX() {
@@ -998,7 +999,7 @@ function exportLaTeX() {
             cCProcess.spawn(exe, ["-f", "markdown", "-t", "latex", "-o", x, filename]);
             notify("Running pandoc succeeded.");
         }
-    });     
+    });
 }
 
 
@@ -1023,7 +1024,7 @@ function exportPDF() {
             cCProcess.spawn(exe, ["-o", x, filename]);
             notify("Running markdown2pdf succeeded.");
         }
-    });     
+    });
 }
 
 function newFile() {
@@ -1050,7 +1051,7 @@ function notify(str) {
     $("#notify-area").html(str);
     $("#notify-area").fadeIn().delay(4000).fadeOut();
 }
-        
+
 $(document).ready(function() {
     txt = defaulttxt
     console.log("Initial content:\n"+txt)
@@ -1064,4 +1065,3 @@ $(document).ready(function() {
     $("#pandoc-exe").val(cPrefs.get("pandoc-exe","C:\\Program Files (x86)\\Pandoc\\bin\\pandoc.exe"));
     $("#pandoc-m2p-exe").val(cPrefs.get("pandoc-m2p-exe","C:\\Program Files (x86)\\Pandoc\\bin\\markdown2pdf.exe"));
 });
-
