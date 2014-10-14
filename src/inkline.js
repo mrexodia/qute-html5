@@ -21,8 +21,6 @@ blankBlockStr = "<div class='box-container editing'><div class='box-button' styl
 
 dir="C:\\Users\\Felix\\";
 
-converter = new Showdown.converter();
-
 blockSeparator = "\n\n";
 
 cFullscreen = require("fullscreen");
@@ -208,7 +206,17 @@ var transformers = {
         outputElt.innerHTML = source
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,outputElt], // apply MathJax
                           [function(){
-                              outputElt.innerHTML = converter.makeHtml(outputElt.innerHTML);  // apply Showdown
+                              outputElt.innerHTML = marked(outputElt.innerHTML,
+                              {
+                                renderer: new marked.Renderer(),
+                                gfm: true,
+                                tables: true,
+                                breaks: true,
+                                pedantic: false,
+                                sanitize: false,
+                                smartLists: true,
+                                smartypants: false
+                              });
                               //displayBlock(block);
                           }]);
     }
