@@ -19,8 +19,6 @@
 mozDirtyStr = "<br _moz='true' _moz_dirty=''/>";
 blankBlockStr = "<div class='box-container editing'><div class='box-button' style='display:none;'>&gt;</div><div class='box-output'></div><div class='box-source' contentEditable='true'>" + mozDirtyStr + "</div></div>";
 
-dir="C:\\Users\\Felix\\";
-
 blockSeparator = "\n\n";
 
 cFullscreen = require("fullscreen");
@@ -36,6 +34,16 @@ cCProcess = require("child_process");
 var filename = "";
 
 var transformTimer = false;
+
+// STRING EXTENSIONS
+
+String.prototype.startsWith = function(str) {
+    return this.lastIndexOf(str, 0) == 0;
+}
+
+String.prototype.endsWith = function(str) {
+    return this.length >= str.length && this.lastIndexOf(str) + str.length == this.length;
+}
 
 // UI
 
@@ -158,6 +166,36 @@ function prepareBlankBlock(block, str) {
 
 // BLOCK SPLITTING
 
+function splitBlocks(source) {
+    var blocks = source.split(blockSeparator);
+    var result = [];
+    var temp = '';
+    var inCodeBlock = false;
+
+    //make sure code blocks with ''\n\n' inside do not become separated blocks
+    for(var i = 0; i < blocks.length; i++) {
+        var lines = blocks[i].split('\n');
+
+        for(var j = 0; j < lines.length; j++) {
+            if(!inCodeBlock && lines[j].startsWith('```')) {
+                inCodeBlock = true;
+            }
+            else if(inCodeBlock && lines[j].endsWith('```')) {
+                inCodeBlock = false;
+            }
+        }
+
+        if(inCodeBlock) {
+            temp += blocks[i] += blockSeparator;
+        }
+        else {
+            result.push(temp + blocks[i]);
+            temp = '';
+        }
+    }
+    return result;
+}
+
 // delete block if necessary. split block if necessary.
 function processBlock(block) {
     sourceElt = $(block).find(".box-source").get(0);
@@ -166,7 +204,7 @@ function processBlock(block) {
         $(block).remove();
         return [];
     }
-    var sources = source.split(blockSeparator);
+    var sources = splitBlocks(source);
     if(sources.length > 1) { // split
         sourceElt.innerHTML = sources[0];
         blocks = [$(block).get(0)];
@@ -775,13 +813,11 @@ $(document).keydown(handleKeydown);
 // LOAD AND SAVE
 
 function saveNow() {
-    //time = new Date().getTime();
-    //saveDocumentToFile(dir + "test-" + time + ".txt");
     saveDocumentToFile(fileName());
 }
 
 function loadNow() {
-        loadDocumentFromFile(fileName());
+    loadDocumentFromFile(fileName());
 }
 
 function loadDocumentFromJSON(obj) {
@@ -796,14 +832,14 @@ function loadDocumentFromJSON(obj) {
 
 function loadDocumentFromText(str) {
     if(str != undefined) {
-                str = str.replace(/\r\n/g, "\n");
-                $(".column").empty();
-                blocks = str.split(blockSeparator); // blocks are delimited by two blank lines
-                for(var i = 0; i < blocks.length; i++) {
-                appendBlock(blocks[i]);
-                }
+        str = str.replace(/\r\n/g, "\n");
+        $(".column").empty();
+        blocks = splitBlocks(str);
+        for(var i = 0; i < blocks.length; i++) {
+            appendBlock(blocks[i]);
+        }
         // setActiveBlock($($(".box-container").get(0)));
-            transformAll();
+        transformAll();
     }
 }
 
